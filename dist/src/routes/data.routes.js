@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.dataRoutes = void 0;
+const express_1 = require("express");
+const dataController_1 = require("../controller/dataController");
+const dataRoutes = (0, express_1.Router)();
+exports.dataRoutes = dataRoutes;
+const BASE_PATH = "/data";
+dataRoutes.get(`${BASE_PATH}/vaccines`, dataController_1.DataController.getVaccines);
+dataRoutes.get(`${BASE_PATH}/vaccines/:id`, dataController_1.DataController.getVaccines);
+dataRoutes.get(`${BASE_PATH}/users/:id`, dataController_1.DataController.getUsers);

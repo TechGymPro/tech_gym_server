@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MEASUREMENT_ID = exports.APP_ID = exports.MESSAGING_SENDER_ID = exports.STORAGE_BUCKET = exports.PROJECT_ID = exports.AUTH_DOMAIN = exports.API_KEY = void 0;
+exports.API_KEY = 'AIzaSyCbh85cISY35gaqn04fuDU_pKxek4322Oc';
+exports.AUTH_DOMAIN = 'tech-gym-server.firebaseapp.com';
+exports.PROJECT_ID = 'tech-gym-server';
+exports.STORAGE_BUCKET = 'tech-gym-server.appspot.com';
+exports.MESSAGING_SENDER_ID = '691445171460';
+exports.APP_ID = '1:691445171460:web:c7637cc5733f690ca17c51';
+exports.MEASUREMENT_ID = 'G-SQW8G8YTBV';

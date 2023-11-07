@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model coach {
+  coach_id           String               @id @db.VarChar(250)
+  gym_id             Int
+  coach_name         String               @db.VarChar(45)
+  coach_email        String               @db.VarChar(45)
+  coach_cpf          String               @db.VarChar(45)
+  coach_birth        DateTime             @db.Date
+  coach_phone        String               @db.VarChar(45)
+  deleted_date       DateTime?            @db.DateTime(0)
+  updated_date       DateTime             @db.DateTime(0)
+  created_date       DateTime             @db.DateTime(0)
+  gym                gym                  @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "coach_fk0")
+  notifications_user notifications_user[]
+
+  @@index([gym_id], map: "coach_fk0")
+}
+
+model exercise {
+  exercise_id                Int                          @id @default(autoincrement())
+  gym_id                     Int
+  exercise_name              String                       @db.VarChar(45)
+  exercise_url               String?                      @db.VarChar(250)
+  exercise_qtd_serie         Int
+  exercise_qtd_rep           Int
+  exercise_obs               String                       @db.VarChar(250)
+  exercise_rest_time         Int
+  gym                        gym                          @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "exercise_fk0")
+  training_division_exercise training_division_exercise[]
+
+  @@index([gym_id], map: "exercise_fk0")
+}
+
+model gym {
+  gym_id                   Int                        @id @default(autoincrement())
+  gym_name                 String                     @db.VarChar(45)
+  cnjp                     String?                    @db.VarChar(45)
+  city                     String?                    @db.VarChar(45)
+  state                    String?                    @db.VarChar(45)
+  is_active                Bytes                      @db.Binary(1)
+  deleted_date             DateTime?                  @db.DateTime(0)
+  updated_date             DateTime                   @db.DateTime(0)
+  created_date             DateTime                   @db.DateTime(0)
+  coach                    coach[]
+  exercise                 exercise[]
+  notifications_user       notifications_user[]
+  objectives               objectives[]
+  student                  student[]
+  training                 training[]
+  training_division_option training_division_option[]
+}
+
+model notifications_type {
+  notifications_type_id                                                        Int                  @id @default(autoincrement())
+  notifications_type_name                                                      String               @db.VarChar(45)
+  deleted_date                                                                 DateTime?            @db.Timestamp(0)
+  updated_date                                                                 DateTime             @db.Timestamp(0)
+  created_date                                                                 DateTime             @db.Timestamp(0)
+  notifications_user_notifications_user_notifications_typeTonotifications_type notifications_user[] @relation("notifications_user_notifications_typeTonotifications_type")
+}
+
+model notifications_user {
+  notifications_user_id                                                        Int                @id @default(autoincrement())
+  gym_id                                                                       Int
+  coach_id                                                                     String             @db.VarChar(250)
+  notifications_type                                                           Int
+  notifications_title                                                          String             @db.VarChar(45)
+  notifications_text                                                           String             @db.VarChar(250)
+  expired                                                                      Int?               @db.TinyInt
+  deleted_date                                                                 DateTime?          @db.Timestamp(0)
+  updated_date                                                                 DateTime           @db.Timestamp(0)
+  created_date                                                                 DateTime           @db.Timestamp(0)
+  gym                                                                          gym                @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "notifications_user_fk0")
+  coach                                                                        coach              @relation(fields: [coach_id], references: [coach_id], onDelete: NoAction, onUpdate: NoAction, map: "notifications_user_fk1")
+  notifications_type_notifications_user_notifications_typeTonotifications_type notifications_type @relation("notifications_user_notifications_typeTonotifications_type", fields: [notifications_type], references: [notifications_type_id], onDelete: NoAction, onUpdate: NoAction, map: "notifications_user_fk2")
+
+  @@index([gym_id], map: "notifications_user_fk0")
+  @@index([coach_id], map: "notifications_user_fk1")
+  @@index([notifications_type], map: "notifications_user_fk2")
+}
+
+model objectives {
+  objective_id   Int        @id @default(autoincrement())
+  gym_id         Int
+  objective_name String     @db.VarChar(45)
+  deleted_date   DateTime?  @db.DateTime(0)
+  updated_date   DateTime   @db.DateTime(0)
+  created_date   DateTime   @db.DateTime(0)
+  gym            gym        @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "objectives_fk0")
+  student        student[]
+  training       training[]
+
+  @@index([gym_id], map: "objectives_fk0")
+}
+
+model student {
+  student_id             String     @id @db.VarChar(45)
+  gym_id                 Int
+  student_name           String     @db.VarChar(45)
+  student_email          String     @db.VarChar(45)
+  student_cpf            String     @db.VarChar(45)
+  student_birth          DateTime   @db.Date
+  student_phone          String     @db.VarChar(45)
+  objective_id           Int
+  student_height         Float?     @db.Float
+  student_initial_weight Float?     @db.Float
+  student_actual_weight  Float?     @db.Float
+  deleted_date           DateTime?  @db.DateTime(0)
+  updated_date           DateTime   @db.DateTime(0)
+  created_date           DateTime   @db.DateTime(0)
+  student_wished_weight  Float?     @db.Float
+  training_id            Int?
+  gym                    gym        @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "student_fk0")
+  objectives             objectives @relation(fields: [objective_id], references: [objective_id], onDelete: NoAction, onUpdate: NoAction, map: "student_fk1")
+  training               training?  @relation(fields: [training_id], references: [training_id], onDelete: NoAction, onUpdate: NoAction, map: "student_fk2")
+
+  @@index([gym_id], map: "student_fk0")
+  @@index([objective_id], map: "student_fk1")
+  @@index([training_id], map: "student_fk2")
+}
+
+model training {
+  training_id                 Int                      @id @default(autoincrement())
+  gym_id                      Int
+  training_division_option_id Int
+  objective_id                Int
+  training_name               String                   @db.VarChar(45)
+  deleted_date                DateTime?                @db.Timestamp(0)
+  updated_date                DateTime                 @db.Timestamp(0)
+  created_date                DateTime                 @db.Timestamp(0)
+  student                     student[]
+  gym                         gym                      @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "training_fk0")
+  training_division_option    training_division_option @relation(fields: [training_division_option_id], references: [training_division__option_id], onDelete: NoAction, onUpdate: NoAction, map: "training_fk1")
+  objectives                  objectives               @relation(fields: [objective_id], references: [objective_id], onDelete: NoAction, onUpdate: NoAction, map: "training_fk2")
+  training_division           training_division[]
+
+  @@index([gym_id], map: "training_fk0")
+  @@index([training_division_option_id], map: "training_fk1")
+  @@index([objective_id], map: "training_fk2")
+}
+
+model training_division {
+  training_division_id       Int                          @id @default(autoincrement())
+  training_id                Int
+  training_serie_name        String                       @db.VarChar(250)
+  deleted_date               DateTime?                    @db.Timestamp(0)
+  updated_date               DateTime                     @db.Timestamp(0)
+  created_date               DateTime                     @db.Timestamp(0)
+  letter                     String                       @db.VarChar(255)
+  training                   training                     @relation(fields: [training_id], references: [training_id], onDelete: NoAction, onUpdate: NoAction, map: "training_division_fk0")
+  training_division_exercise training_division_exercise[]
+
+  @@index([training_id], map: "training_division_fk0")
+}
+
+model training_division_exercise {
+  training_division_exercise_id Int               @id @default(autoincrement())
+  training_division_id          Int
+  exercise_id                   Int
+  deleted_date                  DateTime?         @db.DateTime(0)
+  updated_date                  DateTime          @db.DateTime(0)
+  created_date                  DateTime          @db.DateTime(0)
+  training_division             training_division @relation(fields: [training_division_id], references: [training_division_id], onDelete: NoAction, onUpdate: NoAction, map: "training_division_exercise_fk0")
+  exercise                      exercise          @relation(fields: [exercise_id], references: [exercise_id], onDelete: NoAction, onUpdate: NoAction, map: "training_division_exercise_fk1")
+
+  @@index([training_division_id], map: "training_division_exercise_fk0")
+  @@index([exercise_id], map: "training_division_exercise_fk1")
+}
+
+model training_division_option {
+  training_division__option_id Int        @id @default(autoincrement())
+  gym_id                       Int
+  training_division_name       String     @db.VarChar(45)
+  deleted_date                 DateTime?  @db.DateTime(0)
+  updated_date                 DateTime   @db.DateTime(0)
+  created_date                 DateTime   @db.DateTime(0)
+  num_options                  Int
+  training                     training[]
+  gym                          gym        @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "training_division_option_fk0")
+
+  @@index([gym_id], map: "training_division_option_fk0")
+}
