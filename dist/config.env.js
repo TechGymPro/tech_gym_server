@@ -8,3 +8,4 @@ exports.STORAGE_BUCKET = 'tech-gym-server.appspot.com';
 exports.MESSAGING_SENDER_ID = '691445171460';
 exports.APP_ID = '1:691445171460:web:c7637cc5733f690ca17c51';
 exports.MEASUREMENT_ID = 'G-SQW8G8YTBV';
+//# sourceMappingURL=config.env.js.map

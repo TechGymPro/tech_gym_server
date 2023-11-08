@@ -15,3 +15,4 @@ const configClient = {
 };
 exports.appClient = (0, app_1.initializeApp)(configClient);
 exports.authClient = (0, auth_1.getAuth)();
+//# sourceMappingURL=client.js.map

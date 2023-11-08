@@ -7,3 +7,4 @@ const appRoutes = (0, express_1.Router)();
 appRoutes.use(auth_routes_1.authRoutes);
 appRoutes.use(data_routes_1.dataRoutes);
 exports.default = appRoutes;
+//# sourceMappingURL=_index.js.map

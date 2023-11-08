@@ -7,3 +7,4 @@ function formatDate(date) {
     return final;
 }
 exports.formatDate = formatDate;
+//# sourceMappingURL=index.js.map

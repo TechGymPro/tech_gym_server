@@ -12,3 +12,4 @@ dataRoutes.get(`${USER_BASE_PATH}/getUserTraining/:gymId`, dataUserController_1.
 //PUT
 dataRoutes.put(`${USER_BASE_PATH}/updateUser`, dataUserController_1.DataUserController.updateUserInfo);
 dataRoutes.put(`${USER_BASE_PATH}/updateHeightWeight`, dataUserController_1.DataUserController.updateUserInfoHeightWeight);
+//# sourceMappingURL=data.routes.js.map

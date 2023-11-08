@@ -8,3 +8,4 @@ const configAdmin = {
 };
 exports.appAdmin = (0, app_1.initializeApp)(configAdmin);
 exports.authAdmin = (0, auth_1.getAuth)(exports.appAdmin);
+//# sourceMappingURL=admin.js.map

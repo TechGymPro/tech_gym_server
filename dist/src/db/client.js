@@ -12,3 +12,4 @@ else {
     prisma = global.prisma;
 }
 exports.default = prisma;
+//# sourceMappingURL=client.js.map

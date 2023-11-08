@@ -67,3 +67,4 @@ class DataUserController {
     }
 }
 exports.DataUserController = DataUserController;
+//# sourceMappingURL=dataUserController.js.map

@@ -7,3 +7,4 @@ const authRoutes = (0, express_1.Router)();
 exports.authRoutes = authRoutes;
 const USER_BASE_PATH = "/auth-user";
 authRoutes.post(`${USER_BASE_PATH}/login`, authUserController_1.AuthUserController.Login);
+//# sourceMappingURL=auth.routes.js.map
