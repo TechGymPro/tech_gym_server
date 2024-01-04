@@ -36,6 +36,25 @@ class AuthRepository {
             throw new Error(error);
         }
     }
+    async loginCoachBD(id, email) {
+        try {
+            const coach = await client_2.default.coach.findUnique({
+                where: {
+                    coach_id: id,
+                    coach_email: email,
+                },
+            });
+            if (coach) {
+                return coach;
+            }
+            else {
+                throw new Error("Usuário não existente");
+            }
+        }
+        catch (error) {
+            throw new Error(error);
+        }
+    }
 }
 exports.AuthRepository = AuthRepository;
 //# sourceMappingURL=authRepo.js.map

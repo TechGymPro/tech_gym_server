@@ -51,6 +51,7 @@ model gym {
   created_date             DateTime                   @db.DateTime(0)
   coach                    coach[]
   exercise                 exercise[]
+  notifications_coach      notifications_coach[]
   notifications_user       notifications_user[]
   objectives               objectives[]
   student                  student[]
@@ -59,12 +60,13 @@ model gym {
 }
 
 model notifications_type {
-  notifications_type_id                                                        Int                  @id @default(autoincrement())
-  notifications_type_name                                                      String               @db.VarChar(45)
-  deleted_date                                                                 DateTime?            @db.Timestamp(0)
-  updated_date                                                                 DateTime             @db.Timestamp(0)
-  created_date                                                                 DateTime             @db.Timestamp(0)
-  notifications_user_notifications_user_notifications_typeTonotifications_type notifications_user[] @relation("notifications_user_notifications_typeTonotifications_type")
+  notifications_type_id                                                          Int                   @id @default(autoincrement())
+  notifications_type_name                                                        String                @db.VarChar(45)
+  deleted_date                                                                   DateTime?             @db.Timestamp(0)
+  updated_date                                                                   DateTime              @db.Timestamp(0)
+  created_date                                                                   DateTime              @db.Timestamp(0)
+  notifications_coach_notifications_coach_notifications_typeTonotifications_type notifications_coach[] @relation("notifications_coach_notifications_typeTonotifications_type")
+  notifications_user_notifications_user_notifications_typeTonotifications_type   notifications_user[]  @relation("notifications_user_notifications_typeTonotifications_type")
 }
 
 model notifications_user {
@@ -187,4 +189,21 @@ model training_division_option {
   gym                          gym        @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "training_division_option_fk0")
 
   @@index([gym_id], map: "training_division_option_fk0")
+}
+
+model notifications_coach {
+  notifications_coach_id                                                        Int                @id @default(autoincrement())
+  gym_id                                                                        Int
+  notifications_type                                                            Int
+  notifications_title                                                           String             @db.VarChar(45)
+  notifications_text                                                            String             @db.VarChar(250)
+  expired                                                                       Int?               @db.TinyInt
+  deleted_date                                                                  DateTime?          @db.Timestamp(0)
+  updated_date                                                                  DateTime           @db.Timestamp(0)
+  created_date                                                                  DateTime           @db.Timestamp(0)
+  gym                                                                           gym                @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "notifications_coach_fk0")
+  notifications_type_notifications_coach_notifications_typeTonotifications_type notifications_type @relation("notifications_coach_notifications_typeTonotifications_type", fields: [notifications_type], references: [notifications_type_id], onDelete: NoAction, onUpdate: NoAction, map: "notifications_coach_fk1")
+
+  @@index([gym_id], map: "notifications_coach_fk0")
+  @@index([notifications_type], map: "notifications_coach_fk1")
 }

@@ -4,6 +4,15 @@ exports.authClient = exports.appClient = void 0;
 const config_env_1 = require("./../../config.env");
 const app_1 = require("firebase/app");
 const auth_1 = require("firebase/auth");
+// const configClient = {
+//   apiKey: process.env.API_KEY,
+//   authDomain: process.env.AUTH_DOMAIN,
+//   projectId: process.env.PROJECT_ID,
+//   storageBucket: process.env.STORAGE_BUCKET,
+//   messagingSenderId: process.env.MESSAGING_SENDER_ID,
+//   appId: process.env.APP_ID,
+//   measurementId: process.env.MEASUREMENT_ID,
+// };
 const configClient = {
     apiKey: config_env_1.API_KEY,
     authDomain: config_env_1.AUTH_DOMAIN,
