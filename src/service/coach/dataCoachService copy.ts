@@ -1,5 +1,5 @@
 import { DataCoachRepository } from "../../repository/coach/dataCoachRepo";
-import { Exercise, TrainingData } from "../../types";
+import { TrainingData } from "../../types";
 import { compare } from "../../utils";
 
 const repo = new DataCoachRepository();
@@ -144,14 +144,6 @@ class DataCoachService {
       throw new Error(error);
     }
   }
-  async getExercise(exerciseId:number,gymId: number) {
-    try {
-      let result = await repo.getExercise(exerciseId,gymId);
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
   async divisionList(gymId: number) {
     try {
       let result = await repo.getTrainings(gymId);
@@ -171,30 +163,6 @@ class DataCoachService {
   async deleteTraining(trainingId: number) {
     try {
       let result = await repo.deleteTraining(trainingId);
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-  async deleteExercise(exerciseId: number , gymId: number) {
-    try {
-      let result = await repo.deleteExercise(exerciseId, gymId);
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-  async createExercise(exercise:Exercise, gym_id:number) {
-    try {
-      let result = await repo.createExercise(exercise, gym_id);
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-  async updateExercise(exercise:Exercise, gym_id:number, exerciseId:number) {
-    try {
-      let result = await repo.updateExercise(exercise, gym_id,exerciseId);
       return result;
     } catch (error: any) {
       throw new Error(error);

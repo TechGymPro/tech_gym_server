@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Request, Response } from "express";
 import { AuthCoachService } from "../../service/coach/authCoachService";
 import { checkMissingField } from "../../utils";
 
@@ -13,6 +13,7 @@ class AuthCoachController {
       checkMissingField(password, "password");
 
       const login = await service.auth(password, email);
+      console.log(login);
 
       return res.status(200).json({ login });
     } catch (error: any) {
@@ -22,7 +23,7 @@ class AuthCoachController {
 
   static async createStudent(req: Request, res: Response) {
     try {
-      const { gymId } = req.params;
+      const gymId = req.headers.gym_id|| req.params.gymId
       const {
         name,
         email,
@@ -43,7 +44,6 @@ class AuthCoachController {
       checkMissingField(objective, "objective");
       checkMissingField(trainingId, "trainingId");
       checkMissingField(password, "password");
-
       const response = await service.createStudent(
         Number(gymId),
         name,
@@ -61,6 +61,38 @@ class AuthCoachController {
       return res.status(401).json({ message: error.message });
     }
   }
+  static async updateStudent(req: Request, res: Response) {
+    try {
+      console.log("AAAAAAAAAAAAA")
+      const gymId = req.headers.gym_id
+      const studentId = req.params.studentId
+      const {
+        name,
+        email,
+        cpf,
+        birthday,
+        phone,
+        objective,
+        trainingId,
+        password,
+      } = req.body;
+      console.log(req.body)
+      console.log(studentId)
+
+      checkMissingField(gymId, "gymId");
+      checkMissingField(studentId, "studentId");
+      checkMissingField(name, "name");
+      checkMissingField(cpf, "cpf");
+      checkMissingField(birthday, "birthday");
+      checkMissingField(phone, "phone");
+      checkMissingField(objective, "objective");
+      checkMissingField(trainingId, "trainingId");
+      const response = await service.updateStudent({idUser:studentId,gymId:Number(gymId),name,email,cpf,birthday,phone,objective:Number(objective),trainingId:Number(trainingId),password});      
+      return res.status(200).json(response);
+    } catch (error: any) {
+      return res.status(401).json({ message: error.message });
+    }
+  }
 
   static async deleteStudent(req: Request, res: Response) {
     try {
@@ -69,6 +101,18 @@ class AuthCoachController {
       checkMissingField(idUser, "idUser");
 
       const response = await service.deleteStudent(idUser);
+
+      return res.status(200).json(response);
+    } catch (error: any) {
+      return res.status(401).json({ message: error.message });
+    }
+  }
+  static async getUserById(req: Request, res: Response) {
+    try {
+      const { studentId } = req.params;
+      checkMissingField(studentId, "studentId");
+
+      const response = await service.getUserById(studentId);
 
       return res.status(200).json(response);
     } catch (error: any) {

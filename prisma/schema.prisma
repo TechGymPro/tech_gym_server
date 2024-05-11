@@ -25,14 +25,17 @@ model coach {
 }
 
 model exercise {
-  exercise_id                Int                          @id @default(autoincrement())
-  gym_id                     Int
-  exercise_name              String                       @db.VarChar(45)
-  exercise_url               String?                      @db.VarChar(250)
-  exercise_qtd_serie         Int
-  exercise_qtd_rep           Int
-  exercise_obs               String                       @db.VarChar(250)
-  exercise_rest_time         Int
+  exercise_id        Int       @id @default(autoincrement())
+  gym_id             Int
+  exercise_name      String    @db.VarChar(45)
+  exercise_url       String?   @db.VarChar(250)
+  exercise_qtd_serie Int
+  exercise_qtd_rep   Int
+  exercise_obs       String    @db.VarChar(250)
+  exercise_rest_time Int
+  type               String
+  deleted_date       DateTime? @db.DateTime(0)
+
   gym                        gym                          @relation(fields: [gym_id], references: [gym_id], onDelete: NoAction, onUpdate: NoAction, map: "exercise_fk0")
   training_division_exercise training_division_exercise[]
 

@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Request, Response } from "express";
 import { DataUserService } from "../../service/user/dataUserService";
 
 const service = new DataUserService();
@@ -28,7 +28,7 @@ class DataUserController {
 
   static async updateUserInfoHeightWeight(req: Request, res: Response) {
     try {
-      const { id, height, actualWeight, wishedWeight, objective } = req.body;
+      const { id, height, actualWeight, wishedWeight, objective , initialWeight} = req.body;
       if (!id) {
         return res.status(400).json({ message: "Body is missing id" });
       }
@@ -45,6 +45,7 @@ class DataUserController {
         height,
         actualWeight,
         wishedWeight,
+        initialWeight,
         objective
       );
 
@@ -69,11 +70,27 @@ class DataUserController {
       return res.status(401).json({ message: error.message });
     }
   }
+  static async getUserData(req: Request, res: Response) {
+    try {
+      const id = req.headers.id as string
+      console.log(id, "userId")
+      if (!id) {
+        return res.status(400).json({ message: "id is missing" });
+      }
+      const response = await service.getUserData(id);
+      console.log(response, "response")
+
+      return res.status(200).json(response);
+    } catch (error: any) {
+      return res.status(401).json({ message: error.message });
+    }
+  }
 
   static async getUserTraining(req: Request, res: Response) {
     try {
-      const { gymId } = req.params;
+      // const { gymId } = req.params;
       const { userId } = req.query;
+      const gymId = req.params.gymId|| req.headers.gymId 
 
       if (!gymId) {
         return res.status(400).json({ message: "GymId is missing" });

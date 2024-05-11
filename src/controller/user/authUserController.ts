@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Request, Response } from "express";
 import { AuthUserService } from "../../service/user/authUserService";
 
 const service = new AuthUserService();

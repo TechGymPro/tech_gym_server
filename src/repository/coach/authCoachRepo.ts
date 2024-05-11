@@ -81,6 +81,18 @@ class AuthCoachRepository {
       throw new Error(error);
     }
   }
+  async getUserById(idUser: string) {
+    try {
+      return await prisma.student.findUnique({
+        where: {
+          student_id: idUser,
+        },
+      });
+
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
 
   async changeStudentTraining(idUser: string, trainingId: number) {
     try {

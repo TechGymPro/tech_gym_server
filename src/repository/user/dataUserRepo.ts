@@ -21,7 +21,7 @@ class DataUserRepository {
 
   async updateUserEmail(email: string, id: string) {
     try {
-      await authAdmin.updateUser(id, { email });
+    await authAdmin.updateUser(id, { email });
 
       await prisma.student.update({
         where: {
@@ -161,6 +161,57 @@ class DataUserRepository {
       });
 
       return result;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+  async getUserData(id: string) {
+    try {
+      const student = await prisma.student.findUnique({
+        where: {
+          student_id: id,
+          deleted_date: null,
+        },
+      });
+      if (student) {
+        return student;
+      } else {
+        throw new Error("Usuário não existente");
+      }
+
+      return student;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+  async updateStudentData(id: string,data:{
+    student_email?:string
+    student_birth?:Date
+    student_height?:number
+    student_initial_weight?:number
+    student_actual_weight?:number
+    student_wished_weight?:number
+    student_objective_id?:number
+  }) {
+    try {
+      const student = await prisma.student.findUnique({
+        where: {
+          student_id: id,
+          deleted_date: null,
+        },
+      });
+      if (!student) {
+        throw new Error("Usuário não existente");
+      }
+      console.log(data,"update this shit")
+      const result = await prisma.student.update({
+        where: {
+          student_id: id,
+        },
+        data,
+      });
+
+      return result ? result : student;
     } catch (error: any) {
       throw new Error(error);
     }
