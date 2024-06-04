@@ -1,4 +1,3 @@
-import { Response } from "express";
 
 export function formatDate(date: string) {
   var d = new Date(date);
@@ -10,6 +9,13 @@ export function formatDate(date: string) {
 export function checkMissingField(field: any, fieldName: string) {
   if (!field) {
     throw new Error(`${fieldName} is missing`);
+  }
+}
+export function compare(first: any, second: any) {
+  if (!first ||!second ) {
+   false
+  }else{
+    return first === second;
   }
 }
 

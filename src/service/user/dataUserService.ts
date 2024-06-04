@@ -57,8 +57,10 @@ class DataUserService {
     height: number,
     actualWeight: number,
     wishedWeight: number,
+    initialWeight: number,
     objective: number
   ) {
+    const sendInitialWeight =initialWeight
     try {
       if (height) {
         const response = await repo.updateUserHeight(height, id);
@@ -108,6 +110,12 @@ class DataUserService {
           throw new Error("Wished height failed to update");
         }
       }
+      if (sendInitialWeight && initialWeight?.student_initial_weight!== sendInitialWeight) {
+        const response = await repo.updateUserInitialWeight(sendInitialWeight, id);
+        if (!response) {
+          throw new Error("Wished height failed to update");
+        }
+      }
 
       return "success";
     } catch (error: any) {
@@ -119,6 +127,15 @@ class DataUserService {
   async getUserNotifications(gymId: number) {
     try {
       const response = await repo.getUserNotifications(gymId);
+
+      return response;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+  async getUserData(id: string) {
+    try {
+      const response = await repo.getUserData(id);
 
       return response;
     } catch (error: any) {

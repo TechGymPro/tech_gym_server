@@ -1,6 +1,6 @@
 import prisma from "../../db/client";
 import { authAdmin } from "../../firebase/admin";
-import { Exercise, TrainingData, TrainingDivisionExercise } from "../../types";
+import { TrainingData, TrainingDivisionExercise } from "../../types";
 
 class DataCoachRepository {
   async updateCoachEmail(email: string, id: string) {
@@ -231,53 +231,11 @@ class DataCoachRepository {
       throw new Error(error);
     }
   }
-  async updateTrainingDivisionByOptionAndTrainingId(letters:string, idTraining:number){
-    try {
-      const splitLetter = letters.split("");
-      const result  = await prisma.training_division.updateMany({
-        where: {
-        AND: [
-          {
-            letter: {notIn:splitLetter},          },
-          {
-            training_id: idTraining,
-          },
-          {
-            deleted_date: null,
-          },
-        ]
-        },
-        data:{
-          deleted_date: new Date(),
-        }
-      });
-
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
   async getExercieis(gymId: number) {
     try {
       const result = await prisma.exercise.findMany({
         where: {
           gym_id: gymId,
-          deleted_date: null,
-        },
-      });
-
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-  async getExercise(exerciseId:number,gymId: number) {
-    try {
-      const result = await prisma.exercise.findUnique({
-        where: {
-          exercise_id: exerciseId,
-          gym_id: gymId,
-          deleted_date: null,
         },
       });
 
@@ -330,9 +288,8 @@ class DataCoachRepository {
       const trainingReceive= trainingDivisionExercise
       let idsToCreate:TrainingDivisionExercise[] =  trainingReceive.filter((item) => !item.trainingDivisionId)
       let idsToUpdate:TrainingDivisionExercise[] =  trainingReceive.filter((item) => item.trainingDivisionId > 0)
-      const isCreating = idsToCreate && idsToCreate.length>0
-      const isUpdating = idsToUpdate && idsToUpdate.length>0
-      isCreating&& idsToCreate.forEach(async (item) => {
+    
+      idsToCreate &&idsToCreate.length>0&& idsToCreate.forEach(async (item) => {
       const trainingCreate=  await prisma.training_division.create({
          data: {
             training_serie_name: item.trainingDivisionName,
@@ -342,71 +299,43 @@ class DataCoachRepository {
             training_id:training_id
           },
         });
-
-       const exercice= isCreating && item.idsExercise&& item.idsExercise.length>0&&  await prisma.training_division_exercise.createMany(
+        const existExercice = await prisma.training_division_exercise.findMany({
+          where:{training_division_id:item.trainingDivisionId}
+        })
+        let newIdsExercises = item.idsExercise.filter((id) => !existExercice.map((item) => item.exercise_id).includes(id))  
+        newIdsExercises&& newIdsExercises.length>0&&  await prisma.training_division_exercise.createMany(
           {
-          data:item.idsExercise.map((id) => ({
-            training_division_id: trainingCreate.training_division_id,
+          data:newIdsExercises.map((id) => ({
+            training_division_id: trainingCreate.training_id,
             exercise_id: id,
             created_date: new Date(),
             updated_date: new Date(),
           })),
         })
-        console.log(exercice,"exercice")
       })
-      console.log(idsToUpdate,"idsToUpdate")
-      console.log("------------------------------------idsToUpdate")
-      console.log(idsToCreate,"idsToCreate")
-      console.log("------------------------------------idsToCrate")
-      console.log(trainingReceive,"trainingReceive")
-      console.log("------------------------------------Training")
-      isUpdating && idsToUpdate.forEach(async (item) => {
-        const existExercice = await prisma.training_division_exercise.findMany({
-          where:{training_division_id:item.trainingDivisionId , deleted_date:null}
-        })
-        let newIdsExercises = item.idsExercise && item.idsExercise.length>0 && existExercice && existExercice.length>0? item.idsExercise.filter((id) => !existExercice.map((item) => item.exercise_id).includes(id)) : item.idsExercise
-        console.log(newIdsExercises,"newIdsExercises")
-      const trainingUpdate=  await prisma.training_division.update({
+        
+      idsToUpdate &&idsToUpdate.length>0 && idsToUpdate.forEach(async (item) => {
+      const trainingCreate=  await prisma.training_division.update({
         where:{
           training_division_id:item.trainingDivisionId
         },
          data: {
             training_serie_name: item.trainingDivisionName,
             updated_date: new Date(),
-            // letter: item.trainingDivisionLetter,
+            created_date: new Date(),
+            letter: item.trainingDivisionLetter,
             training_id:training_id
           },
         });
-        item.idsExercise&& item.idsExercise.length>0 &&   await prisma.training_division_exercise.updateMany({where:{
-          training_division_id:item.trainingDivisionId,
-          exercise_id:{notIn:item.idsExercise},
-          deleted_date: null,
-        },
-        data:{
-          deleted_date: new Date(),
-        }})
-        console.log(existExercice,"item.existExercice")
-        console.log(item.idsExercise,"item.idsExercise")
-        console.log(newIdsExercises,"newIdsExercises")
-        // const exercice= isCreating && item.idsExercise&& item.idsExercise.length>0&&  await prisma.training_division_exercise.createMany(
-        //   {
-        //   data:item.idsExercise.map((id) => ({
-        //     training_division_id: trainingCreate.training_division_id,
-        //     exercise_id: id,
-        //     created_date: new Date(),
-        //     updated_date: new Date(),
-        //   })),
-        // })
-        const dataCreate = 
-           newIdsExercises.map((id) => ({
-            training_division_id: item.trainingDivisionId,
-            exercise_id: Number(id),
+        await prisma.training_division_exercise.createMany(
+          {
+          data: item.idsExercise.map((id) => ({
+            training_division_id: trainingCreate.training_id,
+            exercise_id: id,
             created_date: new Date(),
             updated_date: new Date(),
-            deleted_date:null
-           }))
-           console.log(dataCreate,"dataCreate")
-        newIdsExercises && newIdsExercises.length>0&&   await prisma.training_division_exercise.createMany({data:dataCreate})
+          })),
+        })
       })
         
       
@@ -464,53 +393,6 @@ class DataCoachRepository {
       const result = await prisma.training.update({
         where: {
           training_id: training_id,
-        },
-        data: {
-          deleted_date: new Date(),
-        }
-      });
-
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-  async createExercise(exercise:Exercise, gymId:number) {
-    try {
-     const result = prisma.exercise.create({data:{
-      ...exercise,
-      gym_id:gymId
-     }})
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-  async updateExercise(exercise:Exercise, gymId:number, exerciseId:number) {
-    try {
-     const result = prisma.exercise.update({
-      where:{exercise_id:exerciseId},
-      data:{
-      ...exercise,
-      gym_id:gymId
-     }})
-      return result;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-  async deleteExercise(exerciseId:number, gymId:number) {
-    try {
-      const checkUsability =  await prisma.training_division_exercise.findMany({
-        where:{exercise_id:exerciseId,deleted_date:null}
-      })
-      if(checkUsability.length>0){
-        throw new Error("exercise is used in training") // TODO: change to custom error in the future 
-      }
-      const result = await prisma.exercise.update({
-        where: {
-          exercise_id: exerciseId,
-          gym_id:gymId
         },
         data: {
           deleted_date: new Date(),
