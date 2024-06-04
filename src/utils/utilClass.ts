@@ -1,7 +1,7 @@
 // prettier-ignore
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 // import {
 //   signInWithEmailAndPassword,

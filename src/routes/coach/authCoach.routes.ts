@@ -7,6 +7,7 @@ const authCoachRoutes = Router();
 const USER_BASE_PATH = "/auth-coach";
 // PUT
 authCoachRoutes.put(`${USER_BASE_PATH}/changeStudentTraining/:idUser/:trainingId`, AuthCoachController.changeStudentTraining);
+authCoachRoutes.put(`${USER_BASE_PATH}/updateStudent/:studentId`, AuthCoachController.updateStudent);
 
 // DELETE
 authCoachRoutes.delete(`${USER_BASE_PATH}/deleteStudent/:idUser`, AuthCoachController.deleteStudent);
@@ -14,8 +15,6 @@ authCoachRoutes.delete(`${USER_BASE_PATH}/deleteStudent/:idUser`, AuthCoachContr
 // POST
 authCoachRoutes.get(`${USER_BASE_PATH}/getUserById/:studentId`, AuthCoachController.getUserById);
 authCoachRoutes.post(`${USER_BASE_PATH}/createStudent/`, AuthCoachController.createStudent);
-authCoachRoutes.put(`${USER_BASE_PATH}/updateStudent/:studentId`, AuthCoachController.updateStudent);
 authCoachRoutes.post(`${USER_BASE_PATH}/login`, AuthCoachController.Login);
-authCoachRoutes.post(`${USER_BASE_PATH}/createStudent/:gymId`, AuthCoachController.createStudent);
 
 export { authCoachRoutes };
